@@ -4,6 +4,7 @@ from .models import Flat
 
 
 class FlatAdmin(admin.ModelAdmin):
+    list_filter = ('new_building',)
     search_fields = ['town', 'address']
     readonly_fields = ['construction_year']
     list_display = (
