@@ -52,11 +52,12 @@ class Flat(models.Model):
     liked_by = models.ManyToManyField(
         User,
         related_name='liked_flats',
-        verbose_name='Кто лайкнул:',
+        verbose_name='Кто лайкнул',
         blank=True)
     owner_pure_phone = PhoneNumberField(
         region='RU',
-        blank=True)
+        blank=True,
+        verbose_name='Нормализованный номер владельца')
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
@@ -66,20 +67,39 @@ class Complaint(models.Model):
     complainer = models.ForeignKey(
         User,
         related_name='complaint',
-        verbose_name='Кто жаловался:',
+        verbose_name='Кто жаловался',
         on_delete=models.CASCADE
     )
     flat = models.ForeignKey(
         Flat,
         related_name='complaint',
-        verbose_name='Квартира, на которую пожаловались:',
+        verbose_name='Квартира, на которую пожаловались',
         on_delete=models.CASCADE
     )
     text = models.TextField(
         max_length=512,
-        verbose_name='Текст жалобы:'
+        verbose_name='Текст жалобы'
     )
 
     def __str__(self):
         return (f'{self.complainer} написал'
                 f'"{self.text}" о квартире по адресу {self.flat}')
+
+
+class Owner(models.Model):
+    owner = models.CharField('ФИО владельца', max_length=200)
+    owners_phonenumber = models.CharField('Номер владельца', max_length=20)
+    owner_pure_phone = PhoneNumberField(
+        region='RU',
+        blank=True,
+        null=True,
+        verbose_name='Нормализованный номер владельца')
+    owned_flats = models.ManyToManyField(
+        Flat,
+        related_name='owners',
+        verbose_name='Квартиры в собственности'
+    )
+
+    def __str__(self):
+        return (f'{self.owner} владеет квартирой по адресу'
+                f'{self.owned_flats}')
