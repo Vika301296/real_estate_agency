@@ -11,6 +11,7 @@ class FlatAdmin(admin.ModelAdmin):
         'address', 'price', 'new_building', 'construction_year', 'town')
     list_display_links = None
     list_editable = ('address', 'price', 'new_building', 'construction_year')
+    raw_id_fields = ('liked_by',)
 
 
 class СomplaintAdmin(admin.ModelAdmin):
