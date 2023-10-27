@@ -101,5 +101,5 @@ class Owner(models.Model):
     )
 
     def __str__(self):
-        return (f'{self.owner} владеет квартирой по адресу'
-                f'{self.owned_flats}')
+        flats = ", ".join(str(flat) for flat in self.owned_flats.all())
+        return f'{self.owner} владеет квартирами по адресам: {flats}'
