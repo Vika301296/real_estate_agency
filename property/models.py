@@ -56,6 +56,10 @@ class Flat(models.Model):
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
 
+    def display_owners(self):
+        return ', '.join([owner.owner for owner in self.owners.all()])
+    display_owners.short_description = 'Владельцы'
+
 
 class Complaint(models.Model):
     complainer = models.ForeignKey(
