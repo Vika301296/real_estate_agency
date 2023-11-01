@@ -62,7 +62,7 @@ class Flat(models.Model):
 
 
 class Complaint(models.Model):
-    complainer = models.ForeignKey(
+    author = models.ForeignKey(
         User,
         related_name='complaints',
         verbose_name='Кто жаловался',
