@@ -75,7 +75,6 @@ class Complaint(models.Model):
         on_delete=models.CASCADE
     )
     text = models.TextField(
-        max_length=512,
         verbose_name='Текст жалобы'
     )
 
