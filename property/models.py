@@ -84,9 +84,9 @@ class Complaint(models.Model):
 
 
 class Owner(models.Model):
-    owner = models.CharField('ФИО владельца', max_length=200)
-    owners_phonenumber = models.CharField('Номер владельца', max_length=20)
-    owner_pure_phone = PhoneNumberField(
+    name = models.CharField('ФИО владельца', max_length=200)
+    phonenumber = models.CharField('Номер владельца', max_length=20)
+    pure_phone = PhoneNumberField(
         region='RU',
         blank=True,
         null=True,
@@ -99,4 +99,4 @@ class Owner(models.Model):
 
     def __str__(self):
         flats = ", ".join(str(flat) for flat in self.owned_flats.all())
-        return f'{self.owner} владеет квартирами по адресам: {flats}'
+        return f'{self.name} владеет квартирами по адресам: {flats}'
