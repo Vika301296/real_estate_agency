@@ -57,7 +57,9 @@ class Flat(models.Model):
         return f'{self.town}, {self.address} ({self.price}р.)'
 
     def display_owners(self):
-        return ', '.join([owner.owner for owner in self.owners.all()])
+        owners = self.owners.all().prefetch_related('owned_flats')
+        owner_names = ', '.join(owner.name for owner in owners)
+        return owner_names
     display_owners.short_description = 'Владельцы'
 
 
@@ -79,7 +81,7 @@ class Complaint(models.Model):
     )
 
     def __str__(self):
-        return (f'{self.complainer} написал'
+        return (f'{self.author} написал'
                 f'"{self.text}" о квартире по адресу {self.flat}')
 
 
@@ -98,5 +100,6 @@ class Owner(models.Model):
     )
 
     def __str__(self):
-        flats = ", ".join(str(flat) for flat in self.owned_flats.all())
-        return f'{self.name} владеет квартирами по адресам: {flats}'
+        owned_flats = self.owned_flats.all().prefetch_related('owners')
+        flat_names = ", ".join(str(flat) for flat in owned_flats)
+        return f'{self.name} владеет квартирами по адресам: {flat_names}'
