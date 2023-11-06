@@ -5,25 +5,34 @@ from django.db import migrations
 
 
 def clean_phone_number(phone_number):
-    # Remove non-numeric characters from the phone number
     cleaned_number = re.sub(r'\D', '', phone_number)
     return cleaned_number
 
 
 def number_to_pure_number(apps, schema_editor):
     Flat = apps.get_model('property', 'Flat')
-    for flat in Flat.objects.all():
-        owners_number = flat.owners_phonenumber
-        cleaned_number = clean_phone_number(owners_number)
-        if cleaned_number:
-            # Attempt to parse the cleaned phone number
-            parsed_owners_number = phonenumbers.parse(cleaned_number, "RU")
-            if phonenumbers.is_possible_number(parsed_owners_number) and phonenumbers.is_valid_number(parsed_owners_number):
-                flat.owner_pure_phone = parsed_owners_number
-                flat.save()
-            else:
-                flat.owner_pure_phone = None
-                flat.save()
+    flat_set = Flat.objects.all()
+    flat_iterator = flat_set.iterator()
+    try:
+        first_flat = next(flat_iterator)
+    except StopIteration:
+        # No rows were found, so do nothing.
+        pass
+    else:
+        # At least one row was found, so iterate over
+        # all the rows, including the first one.
+        from itertools import chain
+        for flat in chain([first_flat], flat_iterator):
+            owners_number = flat.owners_phonenumber
+            cleaned_number = clean_phone_number(owners_number)
+            if cleaned_number:
+                parsed_owners_number = phonenumbers.parse(cleaned_number, "RU")
+                if phonenumbers.is_possible_number(parsed_owners_number) and phonenumbers.is_valid_number(parsed_owners_number):
+                    flat.owner_pure_phone = parsed_owners_number
+                    flat.save()
+                else:
+                    flat.owner_pure_phone = None
+                    flat.save()
 
 
 class Migration(migrations.Migration):
