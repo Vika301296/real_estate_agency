@@ -93,13 +93,13 @@ class Owner(models.Model):
         blank=True,
         null=True,
         verbose_name='Нормализованный номер владельца')
-    owned_flats = models.ManyToManyField(
+    flats = models.ManyToManyField(
         Flat,
         related_name='owners',
         verbose_name='Квартиры в собственности'
     )
 
     def __str__(self):
-        owned_flats = self.owned_flats.all().prefetch_related('owners')
+        owned_flats = self.flats.all().prefetch_related('owners')
         flat_names = ", ".join(str(flat) for flat in owned_flats)
         return f'{self.name} владеет квартирами по адресам: {flat_names}'
