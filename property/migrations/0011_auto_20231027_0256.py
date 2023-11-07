@@ -8,24 +8,16 @@ def move_users_to_owners(apps, schema_editor):
     Owner = apps.get_model('property', 'Owner')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    try:
-        first_flat = next(flat_iterator)
-    except StopIteration:
-        # No rows were found, so do nothing.
-        pass
-    else:
-        # At least one row was found, so iterate over
-        # all the rows, including the first one.
-        from itertools import chain
-        for flat in chain([first_flat], flat_iterator):
-            owner = flat.owner
-            owners_phonenumber = flat.owners_phonenumber
-            owner_pure_phone = flat.owner_pure_phone
-            Owner.objects.get_or_create(
-                owner=owner, owners_phonenumber=owners_phonenumber,
-                defaults={
-                    'owner_pure_phone': owner_pure_phone,
-                })
+    from itertools import chain
+    for flat in chain(flat_iterator):
+        owner = flat.owner
+        owners_phonenumber = flat.owners_phonenumber
+        owner_pure_phone = flat.owner_pure_phone
+        Owner.objects.get_or_create(
+            owner=owner, owners_phonenumber=owners_phonenumber,
+            defaults={
+                'owner_pure_phone': owner_pure_phone,
+            })
 
 
 class Migration(migrations.Migration):

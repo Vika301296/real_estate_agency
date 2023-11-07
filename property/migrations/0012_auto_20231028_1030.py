@@ -8,21 +8,13 @@ def connect_owners_with_flats(apps, schema_editor):
     Owner = apps.get_model('property', 'Owner')
     flat_set = Flat.objects.all()
     flat_iterator = flat_set.iterator()
-    try:
-        first_flat = next(flat_iterator)
-    except StopIteration:
-        # No rows were found, so do nothing.
-        pass
-    else:
-        # At least one row was found, so iterate over
-        # all the rows, including the first one.
-        from itertools import chain
-        for flat in chain([first_flat], flat_iterator):
-            owner, created = Owner.objects.get_or_create(
-                owner=flat.owner,
-                owners_phonenumber=flat.owners_phonenumber
-            )
-            owner.owned_flats.add(flat)
+    from itertools import chain
+    for flat in chain(flat_iterator):
+        owner, created = Owner.objects.get_or_create(
+            owner=flat.owner,
+            owners_phonenumber=flat.owners_phonenumber
+        )
+        owner.owned_flats.add(flat)
 
 
 class Migration(migrations.Migration):
